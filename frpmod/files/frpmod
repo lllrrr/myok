@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+sleep 10
+frpnum=$(echo "$(uci get network.wan_eth0_2_dev.macaddr)" | tr -d ":" )
+uci set frp.@proxy[0].remark=$frpnum
+uci set frp.@proxy[0].subdomain=$frpnum
+uci commit frp
+
+/etc/init.d/frp restart
+rm -rf /etc/config/passwall_show
+rm -rf /etc/config/fileassistant_show
+}
