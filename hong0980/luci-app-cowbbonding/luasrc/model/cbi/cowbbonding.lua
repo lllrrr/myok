@@ -31,8 +31,8 @@ else
 end
 end
 
-m = Map("cowbbonding", translate("CowB绑定"))
-m.description = translate("<b><font color=\"green\">CowB绑定可方便用于一次性绑定大量静态DHCP、ARP名单而无须逐条手动输入。你可以使用EXCEL生成MAC对应的IP地址列表或直接从原DHCP分配记录复制过来不加处理即可直接使用。</font></b>")
+m = Map("cowbbonding", translate("IP/MAC绑定"))
+m.description = translate("<b><font color=\"green\">IP/MAC绑定可方便用于一次性绑定大量静态DHCP、ARP名单而无须逐条手动输入。你可以使用EXCEL生成MAC对应的IP地址列表或直接从原DHCP分配记录复制过来不加处理即可直接使用。</font></b>")
 if ddd and enb then
 local s = m:section(TypedSection, "cowbbonding", "")
 s.description = translate("").. button .. "" .. translate("白名单状态").. " : "  .. state_msg1 .. translate(" -|-") .. state_msg2 .. translate(" -|-") .. state_msg3 .. ""
