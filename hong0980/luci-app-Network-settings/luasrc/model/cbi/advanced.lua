@@ -1,4 +1,4 @@
-m = Map("advanced", translate("网络设置"), translate("<br><font color=\"Red\"><strong>配置文件是直接编辑的！除非你知道自己在干什么，否则请不要轻易修改这些配置文件。配置不正确可能会导致不能开机等错误。</strong></font><br/><b><font color=\"green\">行首添加数字符号 ＃ 被视为注释，删除 ＃ 启用指定选项。建议注释行不要删除行，或备份行后修改。</font></b><br>"))
+m = Map("advanced", translate("网络设置"), translate("<br><font color=\"Red\"><strong>配置文件是直接编辑的！除非你知道自己在干什么，否则请不要轻易修改这些配置文件。配置不正确可能会导致不能开机等错误。</strong></font><br/><b><font color=\"green\">行首添加数字符号 ＃ 被视为注释，删除 ＃ 启用指定选项。建议修改前先注释备份再修改。</font></b><br>"))
 m.apply_on_parse = true
 s = m:section(TypedSection,"advanced")
 s.anonymous = true
