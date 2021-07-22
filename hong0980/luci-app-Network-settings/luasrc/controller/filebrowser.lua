@@ -21,6 +21,9 @@ function index()
     page = entry({"admin", "system", "filebrowser_upload"}, call("filebrowser_upload"), nil)
     page.leaf = true
 
+    page = entry({"admin", "system", "fileassistant", "install"}, call("fileassistant_install"), nil)
+    page.leaf = true
+
 end
 
 function list_response(path, success)
@@ -78,6 +81,29 @@ function filebrowser_rename()
     local newpath = luci.http.formvalue("newpath")
     local success = os.execute('mv "'..filepath..'" "'..newpath..'"')
     list_response(nixio.fs.dirname(filepath), success)
+end
+
+function fileassistant_install()
+    local filepath = luci.http.formvalue("filepath")
+    local isdir = luci.http.formvalue("isdir")
+    local ext = filepath:match(".+%.(%w+)$")
+    filepath = filepath:gsub("<>", "/")
+    filepath = filepath:gsub(" ", "\ ")
+    local success
+    if isdir == "1" then
+        success = false  
+    elseif ext == "ipk" then
+        success = installIPK(filepath)
+    else
+        success = false
+    end
+    list_response(nixio.fs.dirname(filepath), success)
+end
+
+function installIPK(filepath)
+    luci.sys.exec('opkg --force-depends install "'..filepath..'"')
+    luci.sys.exec('rm -rf /tmp/luci-*')
+    return true;
 end
 
 function filebrowser_upload()
