@@ -1,4 +1,4 @@
-m = Map("advanced", translate("网络设置"), translate("<br><font color=\"Red\"><strong>配置文件是直接编辑的！除非你知道自己在干什么，否则请不要轻易修改这些配置文件。配置不正确可能会导致不能开机等错误。</strong></font><br/><b><font color=\"green\">行首添加数字符号 ＃ 被视为注释，删除 ＃ 启用指定选项。建议修改前先注释备份再修改。</font></b><br>"))
+m = Map("advanced", translate("快捷设置"), translate("<br><font color=\"Red\"><strong>配置文件是直接编辑的！除非你知道自己在干什么，否则请不要轻易修改这些配置文件。配置不正确可能会导致不能开机等错误。</strong></font><br/><b><font color=\"green\">行首添加数字符号 ＃ 被视为注释，删除 ＃ 启用指定选项。建议修改前先注释备份再修改。</font></b><br>"))
 m.apply_on_parse = true
 s = m:section(TypedSection,"advanced")
 s.anonymous = true
@@ -225,35 +225,6 @@ if nixio.fs.access("/etc/pcap-dnsproxy/Config.conf") then
 				luci.sys.call("/etc/init.d/pcap-dnsproxy restart >/dev/null &")
 			end
 		nixio.fs.remove("/tmp/Config.conf")
-		end
-	end
-end
-
-if nixio.fs.access("/etc/config/wireless") then
-	s:tab("wirelessconf", translate("配置wireless"), translate("本页是/etc/config/wireless的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
-	o = s:taboption("wirelessconf", Button, "_wireless")
-	o.inputtitle = translate("重启dnsmasq")
-	o.inputstyle = "apply"
-	function o.write(self, section)
-		luci.sys.exec("wifi reload >/dev/null &")
-	end
-
-	conf = s:taboption("wirelessconf", Value, "wirelessconf", nil)
-	conf.template = "cbi/tvalue"
-	conf.rows = 25
-	conf.wrap = "off"
-	function conf.cfgvalue(self, section)
-		return nixio.fs.readfile("/etc/config/wireless") or ""
-	end
-	function conf.write(self, section, value)
-		if value then
-		value = value:gsub("\r\n?", "\n")
-		nixio.fs.writefile("/tmp/wirelessf", value)
-			if (luci.sys.call("cmp -s /tmp/wirelessf /etc/config/wireless") == 1) then
-				nixio.fs.writefile("/etc/wirelessf", value)
-				luci.sys.call("wifi reload >/dev/null")
-			end
-		nixio.fs.remove("/tmp/wirelessf")
 		end
 	end
 end

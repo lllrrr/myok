@@ -82,7 +82,7 @@ G_E() {
 	ADDR2=$(uci get cowbping.cowbping.address2 2>/dev/null) || ADDR2="baidu.com"
 	pkglost=$(uci get cowbping.cowbping.pkglost 2>/dev/null) || pkglost=80
 	pkgdelay=$(uci get cowbping.cowbping.pkgdelay 2>/dev/null) || pkgdelay=300
-	log "开始运行，系统以每 $time分循环检查网络......"
+	log "开始运行！系统以每 $time分循环检查网络状况......"
 	sleep "$delaytime"
 }
 

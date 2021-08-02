@@ -1,6 +1,14 @@
 f = SimpleForm("logview")
 f.reset = false
 f.submit = false
+
+o = f:field(Button, "_apply")
+o.inputtitle = translate("É¾³ýÈÕÖ¾")
+o.inputstyle = "remove"
+function o.write()
+	luci.sys.exec("cat /dev/null >/tmp/log/cowbping.log &")
+end
+
 t = f:field(TextValue, "conf")
 t.rmempty = true
 t.rows = 25
