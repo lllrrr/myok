@@ -3,7 +3,7 @@ f.reset = false
 f.submit = false
 
 o = f:field(Button, "_apply")
-o.inputtitle = translate("É¾³ýÈÕÖ¾")
+o.inputtitle = translate("åˆ é™¤æ—¥å¿—")
 o.inputstyle = "remove"
 function o.write()
 	luci.sys.exec("cat /dev/null >/tmp/log/cowbping.log &")
