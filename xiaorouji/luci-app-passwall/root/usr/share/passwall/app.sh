@@ -32,6 +32,7 @@ API_GEN_V2RAY=$LUA_API_PATH/gen_v2ray.lua
 API_GEN_V2RAY_PROTO=$LUA_API_PATH/gen_v2ray_proto.lua
 API_GEN_TROJAN=$LUA_API_PATH/gen_trojan.lua
 API_GEN_NAIVE=$LUA_API_PATH/gen_naiveproxy.lua
+API_GEN_HYSTERIA=$LUA_API_PATH/gen_hysteria.lua
 
 echolog() {
 	local d="$(date "+%Y-%m-%d %H:%M:%S")"
@@ -219,18 +220,16 @@ first_type() {
 
 eval_set_val() {
 	for i in $@; do
-		_i=$(echo $i | tr -s ',' '\n')
-		for _j in $_i; do
-			eval $_j
+		for j in $i; do
+			eval $j
 		done
 	done
 }
 
 eval_unset_val() {
 	for i in $@; do
-		_i=$(echo $i | tr -s ',' '\n')
-		for _j in $_i; do
-			eval unset $_j
+		for j in $i; do
+			eval unset j
 		done
 	done
 }
@@ -310,7 +309,7 @@ load_config() {
 	export XRAY_LOCATION_ASSET=$V2RAY_LOCATION_ASSET
 	mkdir -p /var/etc $TMP_PATH $TMP_BIN_PATH $TMP_ID_PATH $TMP_PORT_PATH $TMP_ROUTE_PATH $TMP_ACL_PATH
 	REDIRECT_LIST="socks ss ssr v2ray xray trojan-plus trojan-go naiveproxy"
-	TPROXY_LIST="socks ss ssr v2ray xray trojan-plus brook trojan-go"
+	TPROXY_LIST="socks ss ssr v2ray xray trojan-plus brook trojan-go hysteria"
 }
 
 run_ipt2socks() {
@@ -464,6 +463,10 @@ run_socks() {
 		lua $API_GEN_SS -node $node -local_addr "0.0.0.0" -local_port $socks_port -server_host $server_host -server_port $port -protocol socks -mode tcp_and_udp > $config_file
 		ln_start_bin "$(first_type $bin ss-local)" "$bin" $log_file -c "$config_file" -v
 	;;
+	hysteria)
+		lua $API_GEN_HYSTERIA -node $node -local_socks_port $socks_port > $config_file
+		ln_start_bin "$(first_type $(config_t_get global_app hysteria_file))" "hysteria" $log_file -c "$config_file" client
+	;;
 	esac
 
 	# http to socks
@@ -549,6 +552,10 @@ run_redir() {
 			[ "$(config_n_get $node ss_rust 0)" = "1" ] && bin="sslocal"
 			lua $API_GEN_SS -node $node -local_addr "0.0.0.0" -local_port $local_port -protocol redir -mode udp_only > $config_file
 			ln_start_bin "$(first_type $bin ss-redir)" "$bin" $log_file -c "$config_file" -v
+		;;
+		hysteria)
+			lua $API_GEN_HYSTERIA -node $node -local_udp_redir_port $local_port > $config_file
+			ln_start_bin "$(first_type $(config_t_get global_app hysteria_file))" "hysteria" $log_file -c "$config_file" client
 		;;
 		esac
 	;;
@@ -705,6 +712,16 @@ run_redir() {
 				lua $API_GEN_SS -node $node -local_addr "0.0.0.0" -local_port $local_port -protocol redir $lua_mode_arg $lua_tproxy_arg > $config_file
 			fi
 			ln_start_bin "$(first_type $bin ss-redir)" "$bin" $log_file -c "$config_file" -v
+		;;
+		hysteria)
+			[ "$TCP_UDP" = "1" ] && {
+				config_file=$(echo $config_file | sed "s/TCP/TCP_UDP/g")
+				UDP_REDIR_PORT=$TCP_REDIR_PORT
+				UDP_NODE="nil"
+				_extra_param="-local_udp_redir_port $local_port"
+			}
+			lua $API_GEN_HYSTERIA -node $node -local_tcp_redir_port $local_port ${_extra_param} > $config_file
+			ln_start_bin "$(first_type $(config_t_get global_app hysteria_file))" "hysteria" $log_file -c "$config_file" client
 		;;
 		esac
 		if [ -n "${_socks_flag}" ]; then
@@ -965,6 +982,7 @@ start_dns() {
 	;;
 	v2ray_tcp)
 		local dns_forward=$(get_first_dns DNS_FORWARD 53 | sed 's/#/:/g')
+		local dns_address=$(echo $dns_forward | awk -F ':' '{print $1}')
 		local up_trust_tcp_dns=$(config_t_get global up_trust_tcp_dns "tcp")
 		[ "${DNS_CACHE}" == "0" ] && local _extra_param="-dns_cache 0"
 		if [ "$up_trust_tcp_dns" = "socks" ]; then
@@ -972,10 +990,10 @@ start_dns() {
 			local socks_server=$(echo $(config_t_get global socks_server 127.0.0.1:1080) | sed "s/#/:/g")
 			local socks_address=$(echo $socks_server | awk -F ':' '{print $1}')
 			local socks_port=$(echo $socks_server | awk -F ':' '{print $2}')
-			lua $API_GEN_V2RAY -dns_listen_port "${dns_listen_port}" -dns_server "tcp://${dns_forward}" -dns_socks_address "${socks_address}" -dns_socks_port "${socks_port}" ${_extra_param} > $TMP_PATH/DNS.json
+			lua $API_GEN_V2RAY -dns_listen_port "${dns_listen_port}" -dns_server "${dns_address}" -dns_tcp_server "tcp://${dns_forward}" -dns_socks_address "${socks_address}" -dns_socks_port "${socks_port}" ${_extra_param} > $TMP_PATH/DNS.json
 		elif [ "${up_trust_tcp_dns}" = "tcp" ]; then
 			use_tcp_node_resolve_dns=1
-			lua $API_GEN_V2RAY -dns_listen_port "${dns_listen_port}" -dns_server "tcp://${dns_forward}" ${_extra_param} > $TMP_PATH/DNS.json
+			lua $API_GEN_V2RAY -dns_listen_port "${dns_listen_port}" -dns_server "${dns_address}" -dns_tcp_server "tcp://${dns_forward}" ${_extra_param} > $TMP_PATH/DNS.json
 		fi
 		ln_start_bin "$(first_type $(config_t_get global_app v2ray_file) v2ray)" v2ray $TMP_PATH/DNS.log -config="$TMP_PATH/DNS.json"
 		echolog "  - 域名解析 DNS Over TCP..."
@@ -1061,7 +1079,7 @@ start_dns() {
 		ln_start_bin "$(first_type chinadns-ng)" chinadns-ng "$log_path" -v -b 0.0.0.0 -l "${china_ng_listen_port}" ${china_ng_chn:+-c "${china_ng_chn}"} ${chnlist_param} ${china_ng_gfw:+-t "${china_ng_gfw}"} ${gfwlist_param:+-g "${gfwlist_param}"} -f
 		echolog "  + 过滤服务：ChinaDNS-NG(:${china_ng_listen_port})：国内DNS：${china_ng_chn}，可信DNS：${china_ng_gfw}"
 	}
-	
+	source $APP_PATH/helper_${DNS_N}.sh stretch
 	source $APP_PATH/helper_${DNS_N}.sh add DNS_MODE=$DNS_MODE TMP_DNSMASQ_PATH=$TMP_DNSMASQ_PATH DNSMASQ_CONF_FILE=/var/dnsmasq.d/dnsmasq-passwall.conf DEFAULT_DNS=$DEFAULT_DNS LOCAL_DNS=$LOCAL_DNS TUN_DNS=$TUN_DNS CHINADNS_DNS=$china_ng_listen TCP_NODE=$TCP_NODE PROXY_MODE=${TCP_PROXY_MODE}${LOCALHOST_TCP_PROXY_MODE}
 }
 
@@ -1215,7 +1233,7 @@ start_haproxy() {
 	items=$(echo "${sort_items}" | sort -n | cut -d ' ' -sf 2)
 
 	unset lport
-	local haproxy_port lbss lbweight export backup
+	local haproxy_port lbss lbweight export backup remark
 	local msg bip bport hasvalid bbackup failcount interface
 	for item in ${items}; do
 		unset haproxy_port bbackup
@@ -1225,6 +1243,7 @@ start_haproxy() {
 
 		[ -z "$haproxy_port" ] || [ -z "$bip" ] && echolog "  - 丢弃1个明显无效的节点" && continue
 		[ "$backup" = "1" ] && bbackup="backup"
+		remark=$(echo $bip | sed "s/\[//g" | sed "s/\]//g")
 
 		[ "$lport" = "${haproxy_port}" ] || {
 			hasvalid="1"
@@ -1238,7 +1257,7 @@ start_haproxy() {
 		}
 
 		cat <<-EOF >> "${haproxy_file}"
-			    server $bip:$bport $bip:$bport weight $lbweight check inter 1500 rise 1 fall 3 $bbackup
+			    server $remark:$bport $bip:$bport weight $lbweight check inter 1500 rise 1 fall 3 $bbackup
 		EOF
 
 		if [ "$export" != "0" ]; then
