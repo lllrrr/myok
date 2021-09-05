@@ -1,10 +1,10 @@
-m = Map("advanced", translate("快捷设置"), translate("<br><font color=\"Red\"><strong>配置文件是直接编辑的！除非你知道自己在干什么，否则请不要轻易修改这些配置文件。配置不正确可能会导致不能开机等错误。</strong></font><br/><b><font color=\"green\">行首添加数字符号 ＃ 被视为注释，删除 ＃ 启用指定选项。建议修改前先注释备份再修改。</font></b><br>"))
+m = Map("advanced", translate("快捷设置"), translate("<br><font color=\"Red\"><strong>配置文件是直接编辑保存的！除非你知道在干什么，否则请不要修改这些配置文件。配置不正确可能会导致不能开机，联网等错误。</strong></font><br/><b><font color=\"green\">注释行在行首添加 ＃ 。修改行前建议先备份行再修改。</font></b><br>"))
 m.apply_on_parse = true
 s = m:section(TypedSection,"advanced")
 s.anonymous = true
 
 if nixio.fs.access("/etc/config/network") then
-	s:tab("netwrokconf", translate("配置network"), translate("本页是/etc/config/network的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("netwrokconf", translate("网络"), translate("本页是/etc/config/network的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("netwrokconf", Button, "_network")
 	o.inputtitle = translate("重启网络")
 	o.inputstyle = "apply"
@@ -14,7 +14,7 @@ if nixio.fs.access("/etc/config/network") then
 
 	conf = s:taboption("netwrokconf", Value, "netwrokconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/config/network") or ""
@@ -33,7 +33,7 @@ if nixio.fs.access("/etc/config/network") then
 end
 
 if nixio.fs.access("/etc/config/wireless") then
-	s:tab("wirelessconf", translate("配置无线"), translate("本页是/etc/config/wireless的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("wirelessconf", translate("无线"), translate("本页是/etc/config/wireless的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("wirelessconf", Button, "_wifi")
 	o.inputtitle = translate("重启wifi")
 	o.inputstyle = "apply"
@@ -43,7 +43,7 @@ if nixio.fs.access("/etc/config/wireless") then
 
 	conf = s:taboption("wirelessconf", Value, "wirelessconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/config/wireless") or ""
@@ -63,7 +63,7 @@ if nixio.fs.access("/etc/config/wireless") then
 end
 
 if nixio.fs.access("/etc/config/dhcp") then
-	s:tab("dhcpconf", translate("配置DHCP"), translate("本页是/etc/config/dhcp的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("dhcpconf", translate("DHCP"), translate("本页是/etc/config/dhcp的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("dhcpconf", Button, "_dhcp")
 	o.inputtitle = translate("重启dhcp")
 	o.inputstyle = "apply"
@@ -73,7 +73,7 @@ if nixio.fs.access("/etc/config/dhcp") then
 
 	conf = s:taboption("dhcpconf", Value, "dhcpconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/config/dhcp") or ""
@@ -92,7 +92,7 @@ if nixio.fs.access("/etc/config/dhcp") then
 end
 
 if nixio.fs.access("/etc/config/firewall") then
-	s:tab("firewallconf", translate("配置防火墙"), translate("本页是/etc/config/firewall的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("firewallconf", translate("防火墙"), translate("本页是/etc/config/firewall的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("firewallconf", Button, "_firewall")
 	o.inputtitle = translate("重启防火墙")
 	o.inputstyle = "apply"
@@ -102,7 +102,7 @@ if nixio.fs.access("/etc/config/firewall") then
 
 	conf = s:taboption("firewallconf", Value, "firewallconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/config/firewall") or ""
@@ -121,7 +121,7 @@ if nixio.fs.access("/etc/config/firewall") then
 end
 
 if nixio.fs.access("/etc/config/uhttpd") then
-	s:tab("uhttpdconf", translate("配置uhttpd"),translate("本页是/etc/config/uhttpd的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("uhttpdconf", translate("uhttpd服务器"),translate("本页是/etc/config/uhttpd的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("uhttpdconf", Button, "_uhttpd")
 	o.inputtitle = translate("重启uhttpd")
 	o.inputstyle = "apply"
@@ -131,7 +131,7 @@ if nixio.fs.access("/etc/config/uhttpd") then
 
 	conf = s:taboption("uhttpdconf", Value, "uhttpdconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/config/uhttpd") or ""
@@ -150,7 +150,7 @@ if nixio.fs.access("/etc/config/uhttpd") then
 end
 
 if nixio.fs.access("/etc/config/mwan3") then
-	s:tab("mwan3conf", translate("配置mwan3"), translate("本页是/etc/config/mwan3的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("mwan3conf", translate("mwan3"), translate("本页是/etc/config/mwan3的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("mwan3conf", Button, "_mwan3")
 	o.inputtitle = translate("重启mwan3")
 	o.inputstyle = "apply"
@@ -160,7 +160,7 @@ if nixio.fs.access("/etc/config/mwan3") then
 
 	conf = s:taboption("mwan3conf", Value, "mwan3conf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/config/mwan3") or ""
@@ -178,7 +178,7 @@ if nixio.fs.access("/etc/config/mwan3") then
 end
 
 if nixio.fs.access("/etc/hosts") then
-	s:tab("hostsconf", translate("配置hosts"), translate("本页是/etc/hosts的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("hostsconf", translate("hosts"), translate("本页是/etc/hosts的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("hostsconf", Button, "_hosts")
 	o.inputtitle = translate("重启dnsmasq")
 	o.inputstyle = "apply"
@@ -188,7 +188,7 @@ if nixio.fs.access("/etc/hosts") then
 
 	conf = s:taboption("hostsconf", Value, "hostsconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/hosts") or ""
@@ -207,10 +207,10 @@ if nixio.fs.access("/etc/hosts") then
 end
 
 if nixio.fs.access("/etc/pcap-dnsproxy/Config.conf") then
-	s:tab("pcapconf", translate("配置pcap-dnsproxy"), translate("本页是/etc/pcap-dnsproxy/Config.conf的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("pcapconf", translate("pcap-dnsproxy"), translate("本页是/etc/pcap-dnsproxy/Config.conf的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	conf = s:taboption("pcapconf", Value, "pcapconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/pcap-dnsproxy/Config.conf") or ""
@@ -230,7 +230,7 @@ if nixio.fs.access("/etc/pcap-dnsproxy/Config.conf") then
 end
 
 if nixio.fs.access("/etc/dnsmasq.conf") then
-	s:tab("dnsmasqconf", translate("配置dnsmasq"), translate("本页是/etc/dnsmasq.conf的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("dnsmasqconf", translate("dnsmasq"), translate("本页是/etc/dnsmasq.conf的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	o = s:taboption("dnsmasqconf", Button, "_dnsmasq")
 	o.inputtitle = translate("重启dnsmasq")
 	o.inputstyle = "apply"
@@ -240,7 +240,7 @@ if nixio.fs.access("/etc/dnsmasq.conf") then
 
 	conf = s:taboption("dnsmasqconf", Value, "dnsmasqconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/dnsmasq.conf") or ""
@@ -260,10 +260,10 @@ end
 
 --profile
 if nixio.fs.access("/etc/profile") then
-	s:tab("profileconf", translate("配置profile"),translate("本页是/etc/profile的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效。<br>"))
+	s:tab("profileconf", translate("环境变量"),translate("本页是/etc/profile的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效。<br>"))
 	conf = s:taboption("profileconf", Value, "profileconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/profile") or ""
@@ -282,10 +282,10 @@ end
 
 --rc.local
 if nixio.fs.access("/etc/rc.local") then
-	s:tab("rc_localconf", translate("配置rc.local"),translate("本页是/etc/rc.local的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效。<br>启动脚本插入到 'exit 0' 之前即可随系统启动运行。<br>"))
+	s:tab("rc_localconf", translate("本地启动脚本"),translate("本页是/etc/rc.local的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效。<br>启动脚本插入到 'exit 0' 之前即可随系统启动运行。<br>"))
 	conf = s:taboption("rc_localconf", Value, "rc_localconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/rc.local") or ""
@@ -304,10 +304,10 @@ end
 
 --sysctl.conf
 if nixio.fs.access("/etc/sysctl.conf") then
-	s:tab("sysctlconf", translate("sysctl内核配置"),translate("本页是/etc/sysctl.conf的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
+	s:tab("sysctlconf", translate("sysctl内核"),translate("本页是/etc/sysctl.conf的配置文件内容，编辑后点击<code>保存&应用</code>按钮后生效<br>"))
 	conf = s:taboption("sysctlconf", Value, "sysctlconf", nil)
 	conf.template = "cbi/tvalue"
-	conf.rows = 25
+	conf.rows = 22
 	conf.wrap = "off"
 	function conf.cfgvalue(self, section)
 		return nixio.fs.readfile("/etc/sysctl.conf") or ""
