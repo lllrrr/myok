@@ -13,15 +13,15 @@ check_updates.write = function()
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
-upgrade_fw_force = s:option (Button, "_upgrade_fw_force", translate("Upgrade Firmware"),translate("Upgrade with Force Flashing (DANGEROUS)"))
-upgrade_fw_force.inputtitle = translate ("Upgrade Firmware")
-upgrade_fw_force.write = function()
-	luci.sys.call ("sysupgrade -v /tmp/tmp/firmware.bin")
+upgrade_fw = s:option (Button, "_upgrade_fw", translate("Upgrade Firmware"),translate("Upgrade with Flashing (DANGEROUS)"))
+upgrade_fw.inputtitle = translate ("Upgrade Firmware")
+upgrade_fw.write = function()
+	luci.sys.call ("sysupgrade -n -q /tmp/tmp/firmware.bin")
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
-upgrade_config = s:option (Button, "_upgrade_config", translate("Upgrade Config"),translate("Using the latest Config may solve some compatibility problems"))
-upgrade_config.inputtitle = translate ("Upgrade Config")
+upgrade_config = s:option (Button, "_upgrade_config", translate("Upgrade PSW Config"),translate("Using the Config modify to PSW"))
+upgrade_config.inputtitle = translate ("Upgrade PSW Config")
 upgrade_config.write = function()
 	luci.sys.call ("wget -P /tmp/tmp http://fw.ydns.xyz/config/passwall")
 	luci.sys.call ("cp -f /tmp/tmp/passwall /etc/config/")
@@ -29,8 +29,8 @@ upgrade_config.write = function()
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
-upgrade_script = s:option (Button, "_upgrade_script", translate("Upgrade Script"),translate("Using the latest Script may solve some compatibility problems"))
-upgrade_script.inputtitle = translate ("Upgrade Script")
+upgrade_script = s:option (Button, "_upgrade_script", translate("Upgrade PSW password Script"),translate("Using the Script modify PSW password"))
+upgrade_script.inputtitle = translate ("Upgrade PSW password Script")
 upgrade_script.write = function()
 	luci.sys.call ("wget -P /tmp/tmp http://fw.ydns.xyz/script/passwallmod")
 	luci.sys.call ("chmod +x /tmp/tmp/passwallmod")
