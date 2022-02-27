@@ -1,5 +1,5 @@
 local fs=require "nixio.fs"
-local conffile="/tmp/adupdate.log"
+local conffile="/tmp/autoupdate.log"
 
 log = SimpleForm("autoupdate")
 log.reset = false

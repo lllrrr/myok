@@ -6,10 +6,10 @@ check_updates = s:option (Button, "_check_updates", translate("Download Firmware
 check_updates.inputtitle = translate ("Download Firmware")
 check_updates.write = function()
 	luci.sys.call ("rm -rf /tmp/tmp/*")
-	luci.sys.call ("cat /dev/null > /tmp/adupdate.log")
+	luci.sys.call ("cat /dev/null > /tmp/autoupdate.log")
 	luci.sys.call ("wget -P /tmp/tmp http://fw.ydns.xyz/xy/firmware.bin")
 	luci.sys.call ("wget -P /tmp/tmp http://fw.ydns.xyz/xy/md5sums")
-	luci.sys.call ("cd /tmp/tmp && md5sum -c md5sums 2> /dev/null | grep OK >> /tmp/adupdate.log")
+	luci.sys.call ("cd /tmp/tmp && md5sum -c md5sums 2> /dev/null | grep OK >> /tmp/autoupdate.log")
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
