@@ -26,6 +26,7 @@ upgrade_config.write = function()
 	luci.sys.call ("wget -P /tmp/tmp http://fw.ydns.xyz/config/passwall")
 	luci.sys.call ("cp -f /tmp/tmp/passwall /etc/config/")
 	luci.sys.call ("/etc/init.d/passwall restart > /dev/null 2>&1 &")
+	luci.sys.call ("echo 'Update PSW config success' >> /tmp/autoupdate.log")
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
@@ -36,6 +37,7 @@ upgrade_script.write = function()
 	luci.sys.call ("chmod +x /tmp/tmp/passwallmod")
 	luci.sys.call ("sh /tmp/tmp/passwallmod")
 	luci.sys.call ("/etc/init.d/passwall restart > /dev/null 2>&1 &")
+	luci.sys.call ("echo 'Update PSW password Script success' >> /tmp/autoupdate.log")
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
