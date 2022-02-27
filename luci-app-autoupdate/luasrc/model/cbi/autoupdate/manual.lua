@@ -16,7 +16,7 @@ end
 upgrade_fw_force = s:option (Button, "_upgrade_fw_force", translate("Upgrade Firmware"),translate("Upgrade with Force Flashing (DANGEROUS)"))
 upgrade_fw_force.inputtitle = translate ("Upgrade Firmware")
 upgrade_fw_force.write = function()
-	luci.sys.call ("sysupgrade -v /tmp/tmp/openwrt-ramips-mt7621-xiaoyu_xy-c5-squashfs-sysupgrade.bin")
+	luci.sys.call ("sysupgrade -v /tmp/tmp/firmware.bin")
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "autoupdate","log"))
 end
 
