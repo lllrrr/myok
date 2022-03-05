@@ -5,9 +5,9 @@ function index()
 	entry({"admin", "services","autoupdate", "show"}, call("show_menu")).leaf = true
 	entry({"admin", "services","autoupdate", "hide"}, call("hide_menu")).leaf = true
 	if nixio.fs.access("/etc/config/passwall_show") then
-	entry({"admin", "services", "autoupdate"}, alias("admin", "services", "autoupdate", "manual"),_("AutoUpdate"), 2).dependent = true
+	entry({"admin", "services", "autoupdate"}, alias("admin", "services", "autoupdate", "main"),_("AutoUpdate"), 2).dependent = true
 	end
-	--entry({"admin", "services", "autoupdate", "main"}, cbi("autoupdate/main"),_("Scheduled Upgrade"), 10).leaf = true
+	entry({"admin", "services", "autoupdate", "main"}, cbi("autoupdate/main"),_("Scheduled Upgrade"), 10).leaf = true
 	entry({"admin", "services", "autoupdate", "manual"}, cbi("autoupdate/manual"),_("Manually Upgrade"), 20).leaf = true
 	entry({"admin", "services", "autoupdate", "log"}, form("autoupdate/log"),_("Upgrade Log"), 30).leaf = true
 

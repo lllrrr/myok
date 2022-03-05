@@ -1,2 +1,8 @@
+
 config autoupdate
 	option enable '0'
+	option flag 'firmware'
+	option github '10.0.0.100'
+	option configf 'config'
+	option scriptf 'script'
+
