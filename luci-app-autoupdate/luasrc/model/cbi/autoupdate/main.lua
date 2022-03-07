@@ -5,9 +5,6 @@ translate("AutoUpdate LUCI supports scheduled upgrade & one-click firmware upgra
 s = m:section(TypedSection, "autoupdate")
 s.anonymous = true
 
-luci.sys.call ("rm -rf /tmp/tmp/*")
-luci.sys.call ("cat /dev/null > /tmp/autoupdate.log")
-
 github = s:option(Value,"github", translate("Server Url"))
 github.default = "10.0.0.100"
 github.rmempty = true
